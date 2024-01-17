@@ -25,12 +25,13 @@ const find_one_1 = require("./templates/usecase/find-one");
 const { Command } = require("commander");
 const fs = require("fs");
 const figlet = require("figlet");
+var pjson = require("./../package.json");
 const { execSync } = require("child_process");
 const program = new Command();
 console.log(figlet.textSync("MedEdu CLI"));
 program
-    .version("1.4.0")
-    .description("Um CLI para criação automação de arquitetura MedEdu - MedEdu CLI - v1.4.0 - 2024")
+    .version(`${pjson.version}`)
+    .description(`Um CLI para criação automação de arquitetura MedEdu - MedEdu CLI - v${pjson.version} - ${new Date().getFullYear()}`)
     .option("-r, --repository <value>", "Cria um novo repositório")
     .option("-u, --usecase <value>", "Cria os casos de uso da entidade")
     .parse(process.argv);
@@ -76,7 +77,7 @@ function createPrismaMapper(repository) {
 }
 function createFindUsecase(repository) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield syncWriteFile(`src/application/usecases/${string_1.StringUtil.kebabCase(repository)}/find-one.usecase.ts`, new find_usecase_1.FindUsecaseTemplate(repository).getTemplate());
+        yield syncWriteFile(`src/application/usecases/${string_1.StringUtil.kebabCase(repository)}/find.usecase.ts`, new find_usecase_1.FindUsecaseTemplate(repository).getTemplate());
     });
 }
 function createFindOneUsecase(repository) {

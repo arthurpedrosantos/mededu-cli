@@ -17,6 +17,8 @@ const { Command } = require("commander");
 const fs = require("fs");
 const figlet = require("figlet");
 
+var pjson = require("./../package.json");
+
 const { execSync } = require("child_process");
 
 const program = new Command();
@@ -24,9 +26,11 @@ const program = new Command();
 console.log(figlet.textSync("MedEdu CLI"));
 
 program
-  .version("1.4.1")
+  .version(`${pjson.version}`)
   .description(
-    "Um CLI para criação automação de arquitetura MedEdu - MedEdu CLI - v1.4.1 - 2024"
+    `Um CLI para criação automação de arquitetura MedEdu - MedEdu CLI - v${
+      pjson.version
+    } - ${new Date().getFullYear()}`
   )
   .option("-r, --repository <value>", "Cria um novo repositório")
   .option("-u, --usecase <value>", "Cria os casos de uso da entidade")
@@ -93,7 +97,7 @@ async function createFindUsecase(repository: string) {
   await syncWriteFile(
     `src/application/usecases/${StringUtil.kebabCase(
       repository
-    )}/find-one.usecase.ts`,
+    )}/find.usecase.ts`,
     new FindUsecaseTemplate(repository).getTemplate()
   );
 }
