@@ -24,9 +24,9 @@ const program = new Command();
 console.log(figlet.textSync("MedEdu CLI"));
 
 program
-  .version("1.3.1")
+  .version("1.4.0")
   .description(
-    "Um CLI para criação automação de arquitetura MedEdu - MedEdu CLI - v1.3.1 - 2024"
+    "Um CLI para criação automação de arquitetura MedEdu - MedEdu CLI - v1.4.0 - 2024"
   )
   .option("-r, --repository <value>", "Cria um novo repositório")
   .option("-u, --usecase <value>", "Cria os casos de uso da entidade")
