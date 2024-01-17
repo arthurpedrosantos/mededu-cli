@@ -1,0 +1,3 @@
+interface Template {
+  getTemplate(): string;
+}
