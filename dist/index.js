@@ -27,6 +27,7 @@ const fs = require("fs");
 const figlet = require("figlet");
 var pjson = require("./../package.json");
 const { execSync } = require("child_process");
+const cliProgress = require("cli-progress");
 const program = new Command();
 console.log(figlet.textSync("MedEdu CLI"));
 program
@@ -36,8 +37,22 @@ program
     .option("-u, --usecase <value>", "Cria os casos de uso da entidade")
     .parse(process.argv);
 const options = program.opts();
+const paths = {
+    base: "src/base",
+    types: "src/base/types",
+    repositories: "src/application/repositories",
+    repositoriesImpl: "src/infra/database/prisma/repositories",
+    entities: "src/domain/entities",
+    mappers: "src/infra/database/prisma/mappers",
+    usecases: "src/application/usecases",
+    providers: "src/application/providers",
+};
 function syncWriteFile(filename, data) {
     return new Promise((resolve, reject) => {
+        if (fs.existsSync(filename)) {
+            console.error("Arquivo já existe:", filename);
+            reject();
+        }
         fs.writeFile(filename, data, (err) => {
             if (err) {
                 console.error("Erro ao escrever no arquivo:", err);
@@ -92,14 +107,23 @@ function createDeleteUseCase(repository) {
 }
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
+        const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+        progressBar.start(100, 0);
         if (options.repository) {
             yield createTypemap(options.repository);
+            progressBar.update(10);
             yield createRepositoryInterface(options.repository);
+            progressBar.update(20);
             yield createRepositoryImpl(options.repository);
+            progressBar.update(30);
             yield createEntity(options.repository);
+            progressBar.update(40);
             yield createPrismaMapper(options.repository);
+            progressBar.update(50);
             new db_provider_1.DbProviderTemplate(options.repository).getTemplate();
+            progressBar.update(60);
             execSync("npm run lint");
+            progressBar.update(70);
         }
         if (options.usecase) {
             const path = `src/application/usecases/${string_1.StringUtil.kebabCase(options.usecase)}`;
@@ -107,11 +131,16 @@ function init() {
                 fs.mkdirSync(path, { recursive: true });
             }
             yield createFindUsecase(options.usecase);
+            progressBar.update(80);
             yield createFindOneUsecase(options.usecase);
+            progressBar.update(90);
             yield createDeleteUseCase(options.usecase);
             new http_provider_1.HttpProviderTemplate(options.usecase).getTemplate();
             execSync("npm run lint");
+            progressBar.update(100);
         }
+        progressBar.update(100);
+        progressBar.stop();
         if (!process.argv.slice(2).length) {
             program.outputHelp();
         }

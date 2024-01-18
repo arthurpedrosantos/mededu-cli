@@ -16,10 +16,9 @@ import { FindOneUsecaseTemplate } from "./templates/usecase/find-one";
 const { Command } = require("commander");
 const fs = require("fs");
 const figlet = require("figlet");
-
 var pjson = require("./../package.json");
-
 const { execSync } = require("child_process");
+const cliProgress = require("cli-progress");
 
 const program = new Command();
 
@@ -38,8 +37,24 @@ program
 
 const options = program.opts();
 
+const paths = {
+  base: "src/base",
+  types: "src/base/types",
+  repositories: "src/application/repositories",
+  repositoriesImpl: "src/infra/database/prisma/repositories",
+  entities: "src/domain/entities",
+  mappers: "src/infra/database/prisma/mappers",
+  usecases: "src/application/usecases",
+  providers: "src/application/providers",
+};
+
 function syncWriteFile(filename: string, data: any): Promise<void> {
   return new Promise((resolve, reject) => {
+    if (fs.existsSync(filename)) {
+      console.error("Arquivo já existe:", filename);
+      reject();
+    }
+
     fs.writeFile(filename, data, (err: any) => {
       if (err) {
         console.error("Erro ao escrever no arquivo:", err);
@@ -121,16 +136,29 @@ async function createDeleteUseCase(repository: string) {
 }
 
 async function init(): Promise<void> {
+  const progressBar = new cliProgress.SingleBar(
+    {},
+    cliProgress.Presets.shades_classic
+  );
+  progressBar.start(100, 0);
+
   if (options.repository) {
     await createTypemap(options.repository);
+    progressBar.update(10);
     await createRepositoryInterface(options.repository);
+    progressBar.update(20);
     await createRepositoryImpl(options.repository);
+    progressBar.update(30);
     await createEntity(options.repository);
+    progressBar.update(40);
     await createPrismaMapper(options.repository);
+    progressBar.update(50);
 
     new DbProviderTemplate(options.repository).getTemplate();
+    progressBar.update(60);
 
     execSync("npm run lint");
+    progressBar.update(70);
   }
 
   if (options.usecase) {
@@ -143,13 +171,19 @@ async function init(): Promise<void> {
     }
 
     await createFindUsecase(options.usecase);
+    progressBar.update(80);
     await createFindOneUsecase(options.usecase);
+    progressBar.update(90);
     await createDeleteUseCase(options.usecase);
 
     new HttpProviderTemplate(options.usecase).getTemplate();
 
     execSync("npm run lint");
+    progressBar.update(100);
   }
+  progressBar.update(100);
+
+  progressBar.stop();
 
   if (!process.argv.slice(2).length) {
     program.outputHelp();
