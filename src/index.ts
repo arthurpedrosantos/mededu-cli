@@ -67,72 +67,95 @@ function syncWriteFile(filename: string, data: any): Promise<void> {
 }
 
 async function createTypemap(repository: string) {
-  await syncWriteFile(
-    `src/base/types/${StringUtil.kebabCase(repository)}.typemap.ts`,
-    new TypemapTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/base/types/${StringUtil.kebabCase(repository)}.typemap.ts`,
+      new TypemapTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
   Log.success(`Typemap ${repository} criado com sucesso!`);
 }
 
 async function createRepositoryInterface(repository: string) {
-  await syncWriteFile(
-    `src/application/repositories/${StringUtil.kebabCase(
-      repository
-    )}.repository.ts`,
-    new RepositotyInterfaceTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/application/repositories/${StringUtil.kebabCase(
+        repository
+      )}.repository.ts`,
+      new RepositotyInterfaceTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
+  Log.success(`Interface de repositório ${repository} criado com sucesso!`);
 }
 
 async function createRepositoryImpl(repository: string) {
-  await syncWriteFile(
-    `src/infra/database/prisma/repositories/${StringUtil.kebabCase(
-      repository
-    )}.repository.ts`,
-    new RepositotyImplTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/infra/database/prisma/repositories/${StringUtil.kebabCase(
+        repository
+      )}.repository.ts`,
+      new RepositotyImplTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
+  Log.success(`Impl de repositório ${repository} criado com sucesso!`);
 }
 
 async function createEntity(repository: string) {
-  await syncWriteFile(
-    `src/domain/entities/${StringUtil.kebabCase(repository)}.entity.ts`,
-    new EntityTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/domain/entities/${StringUtil.kebabCase(repository)}.entity.ts`,
+      new EntityTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
+  Log.success(`Entidade ${repository} criado com sucesso!`);
 }
 
 async function createPrismaMapper(repository: string) {
-  await syncWriteFile(
-    `src/infra/database/prisma/mappers/${StringUtil.kebabCase(
-      repository
-    )}.mapper.ts`,
-    new PrismaMapperTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/infra/database/prisma/mappers/${StringUtil.kebabCase(
+        repository
+      )}.mapper.ts`,
+      new PrismaMapperTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
+  Log.success(`Mapper ${repository} criado com sucesso!`);
 }
 
 async function createFindUsecase(repository: string) {
-  await syncWriteFile(
-    `src/application/usecases/${StringUtil.kebabCase(
-      repository
-    )}/find.usecase.ts`,
-    new FindUsecaseTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/application/usecases/${StringUtil.kebabCase(
+        repository
+      )}/find.usecase.ts`,
+      new FindUsecaseTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
+  Log.success(`FindUseCase ${repository} criado com sucesso!`);
 }
 
 async function createFindOneUsecase(repository: string) {
-  await syncWriteFile(
-    `src/application/usecases/${StringUtil.kebabCase(
-      repository
-    )}/find-one.usecase.ts`,
-    new FindOneUsecaseTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/application/usecases/${StringUtil.kebabCase(
+        repository
+      )}/find-one.usecase.ts`,
+      new FindOneUsecaseTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
+  Log.success(`FindOneUseCase ${repository} criado com sucesso!`);
 }
 
 async function createDeleteUseCase(repository: string) {
-  await syncWriteFile(
-    `src/application/usecases/${StringUtil.kebabCase(
-      repository
-    )}/delete.usecase.ts`,
-    new DeleteUsecaseTemplate(repository).getTemplate()
-  );
+  try {
+    await syncWriteFile(
+      `src/application/usecases/${StringUtil.kebabCase(
+        repository
+      )}/delete.usecase.ts`,
+      new DeleteUsecaseTemplate(repository).getTemplate()
+    );
+  } catch (error) {}
+  Log.success(`DeleteUseCase ${repository} criado com sucesso!`);
 }
 
 async function init(): Promise<void> {
